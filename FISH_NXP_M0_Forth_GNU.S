@@ -210,6 +210,23 @@ txRDY_Q:
     BX      w //lr              // SUBR RETURN
 
  // XOFF_SUBR:
+/*
+ Note this drops the TXRDY wait on the skip path — that alone removes ~1 char-time per EXEC during compiles. Keep the TXRDY BL at call sites that need it, or move it inside after the state check.
+
+## Why this shape
+
+- **Transition-only emission**: EXEC's per-word XOFF becomes a 3-instruction no-op while gated; EXPECT's XON fires once per line, exactly when the host was stopped. You keep the belt-and-braces call sites but pay for them only on transitions.
+- **Init to 0** (`.space` zero-fills): the first XON at boot is a real transition, so it always goes out — no special cold-start case.
+- **No races**: the system is fully polled, no RX/TX IRQs, so no atomicity concerns. If you ever add the RX DMA + high-water XOFF from an interrupt, this byte must move to a `__IO` (volatile) location and the ISR must own XOFF while the foreground owns XON.
+- **Self-healing option**: if you ever worry the host missed a byte (glitchy USB-serial bridge), add a cheap re-send policy — e.g. re-send XOFF every Nth EXEC — rather than every time.
+
+## Integration with the other findings
+
+- **FSAVE fix**: the NXP `.word XON` under "Stop Downloads" becomes `.word XOFF`; with state, the matching `.word XON` at the end of FSAVE is safe and only emits if actually gated.
+- **TIB-full XOFF**: the count-exhausted EXPECT exit calls XOFF the same way — state makes it free when the line already ended with CR.
+- **?KEY spam**: QKEY's XON collapses to transitions; `BEGIN ?KEY UNTIL` stops streaming 0x11s.
+- One caveat to document: with dedup, a user typing `XOFF` manually then `XON` still works (both are transitions), but a user word that needs a *guaranteed* re-send should write `0` to FLOW_STATE first — worth one line in the port README.
+*/
 #ifdef XON_XOFF
 .section .text, "ax", %progbits
 .thumb_func
@@ -224,7 +241,13 @@ XOFF_SUBR:
 #endif
  //------------------------------------------------------------------------------
 	LDR		y, = XOFF_CHAR
+    LDR     x, = FLOW_STATE
+    LDRB    n, [x]
+    CMP     n, y
+    BEQ     XOFF_DONE       // already gated — skip the TXE wait + transmit
+    STRB    y, [x]          // record transition
 	STRB	y, [n]
+XOFF_DONE:	
     BX      w //lr              // SUBR RETURN
 #endif // XON_XOFF
 
@@ -244,8 +267,14 @@ XON_SUBR:
  //------------------------------------------------------------------------------
  // XON:
 	LDR		y, = XON_CHAR // preserve TOS 11 24 01 49
-	STRB	y, [n]
-    BX      w //lr              // SUBR RETURN
+    LDR     x, = FLOW_STATE
+    LDRB    n, [x]
+    CMP     n, y
+    BEQ     XON_DONE	// already gated — skip the TXE wait + transmit
+    STRB    y, [x]		// record transition
+	STRB	y, [n]		// send XON
+XON_DONE:
+    BX      w //lr
 #endif // XON_XOFF
 .ltorg
 

@@ -63,7 +63,9 @@ SECTIONS
     .stack _heap_end (NOLOAD) :
     {
         _stack_bottom = .;
-        . += 0xB8;
+        /* Sized to fit below ALL_UNINITRAM_START (0x10000D40): slack was 0xB0.
+           0xA0 keeps >=128 bytes for IAP flash calls + 16B guard below DBAUD. */
+        . += 0xA0;
         _estack = .;
     } > RAM
 
