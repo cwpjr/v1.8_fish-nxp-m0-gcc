@@ -63,7 +63,7 @@
 //------------------------------------------------------------------------------
 // START OF SIGNON MESSAGE
 .section .text, "ax", %progbits
-MSG_FISH:
+msg_FISH:
 // DC8 "?" IS A NULL TERMINATED STRING
 // DC8 '?' IS NOT
 //     DC8     'FISH ARM'
@@ -108,12 +108,12 @@ MSG_FISH:
 #ifndef SRM
 // FISH DATE AND TIMESTAMP
     .ascii __DATE__
-MSG_FISH_TIMESTAMP:
+msg_FISH_TIMESTAMP:
     .ascii " at "
     .ascii __TIME__
 #endif
 #ifdef EOL_DLE
-MSG_SIGNON_DLE:
+msg_SIGNON_DLE:
     .byte 0x10
     .byte 0
 #endif
@@ -123,7 +123,7 @@ MSG_SIGNON_DLE:
 
 //------------------------------------------------------------------------------
 // FISH PROMPT
-MSG_MY_OK:
+msg_MY_OK:
     .ascii " ok, go fish in BASE "
 //------------------------------------------------------------------------------
 
@@ -194,7 +194,7 @@ TXRDY_SUBR:
     LDR y, = UART0_STAT // 40064008h UART0 STAT Line Status Register
 #endif
 
-TXRDY_Q:
+txRDY_Q:
     LDR n, [y]// Get Line Status
 //------------------------------------------------------------------------------
 #if             NXP_M0_11xx | NXP_M0_1115
@@ -4720,8 +4720,8 @@ KEY_INTERPRETED_ENTRY:
     .word BL
 #endif
 
-//:
-    NONAME KEY KEY:(-- CH)
+//
+// NONAME KEY KEY:(-- CH)
 // This is the FISH System KEY compiled in the FISH RM
 // KEY_INTERPRETED_ENTRY is the user interpreted/compiled hi-level version
 // That issues XON  before calling this KEY
@@ -4741,7 +4741,7 @@ KEY:
 // A BREAK CONDITION (FROM SINGLE STEPPING) WILL SHOW AS 30h in THE LSR
 // WHEN A TERMINAL SENDS A BREAK THE CARRY IS MAGICALLY SET!
 // AND THE KEY RECIEVED IS NULL SO NULL IS EXECUTED WITHOUT A CR!
-RXRDY_Q:
+rxRDY_Q:
     LDR n, [x]// Get Line Status
     LSRS n, n, #1 // Char available
     BCC rxRDY_Q // sets carry flag
@@ -4851,7 +4851,7 @@ CR:
 //     WC_FISH_IO_NFA = FISH IO: CATEGORY
 
 .section .text, "ax", %progbits
-WC_UARTX_NFA:
+WC_UARTx_NFA:
     .byte 0x80+4+9
     .byte 0x0D
     .byte 0x0A
@@ -5565,7 +5565,7 @@ FISH:
 //NOEXEC HEADERFORWORDCATEGORIES
 //     WC_FISH_PubRel: = FISH Reference Model: CATEGORY
 .section .text, "ax", %progbits
-WC_FISH_PUBREL_NFA:
+WC_FISH_PubRel_NFA:
     .byte 0x80+4+21
     .byte 0x0D
     .byte 0x0A
@@ -5609,13 +5609,12 @@ TASK:
 */
 
 //------------------------------------------------------------------------------
-//:
-    NONAME SECTION:
+//  NONAME SECTION:
 // THESE STAY HERE (INSTEAD OF SLLIB) BECAUSE THEY ARE CONDITIONALLY INCLUDED
 // HI-LEVEL THEM ASM SECTIONS
 #ifdef IO2TP
 //:
-    NONAME CLRPAD:(--)FILL PAD with BLANK'S.
+//  NONAME CLRPAD:(--)FILL PAD with BLANK'S.
 .section .text, "ax", %progbits
 // ALIGNROM 2,0xFFFFFFFF
 CLRPAD:
