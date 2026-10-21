@@ -2,8 +2,6 @@ So both GNU ports are now fixed:
  STM32F407 (proven by booting to the REPL in Renode)
  and NXP LPC812 (statically verified — no LPC812 emulator exists).
 
-GitHub SSH: key:cw2026 Name:FISH
-
 2nd PR!!!!
 LESSON IS: don't reformat whole file. do in chunks!
 What happened: the formatting pass didn't just move whitespace;
