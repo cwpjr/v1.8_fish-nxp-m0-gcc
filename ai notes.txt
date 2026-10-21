@@ -2,15 +2,4 @@ So both GNU ports are now fixed:
  STM32F407 (proven by booting to the REPL in Renode)
  and NXP LPC812 (statically verified — no LPC812 emulator exists).
 
-2nd PR!!!!
-LESSON IS: don't reformat whole file. do in chunks!
-What happened: the formatting pass didn't just move whitespace;
- it uppercased eight label definitions in FISH_NXP_M0_Forth_GNU.S,
-  while every reference to them kept the original mixed case.
-   Assembler symbols are case-sensitive,
-    so the link failed with undefined references. Restored:
-LESSON IS:
-If your formatter has an "uppercase labels" rule,
- I'd disable it for .S files
-  — these NFA labels encode dictionary names
-   and are case-sensitive by design.
+GitHub SSH: key:cw2026 Name:FISH
