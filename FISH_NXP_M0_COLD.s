@@ -33,7 +33,7 @@ _fillRAM:
 
  // Preserve some uninitialized RAM for system use such as MYBAUD
 
-    ldr	t, = ALL_UNINITRAM_END
+	ldr	t, = ALL_UNINITRAM_END
 	ldr	y, = RAM_END
 .thumb_func
 _fillSTACKS:
@@ -49,8 +49,8 @@ _fillSTACKS:
 	STR	t, [sp]
 #endif
 
-	LDR  	p, =PINIT
-	LDR  	r, =RINIT
+	LDR	p, =PINIT
+	LDR	r, =RINIT
 	ADR	i, FM0_WARM
 	PUSHi2r
 	NEXT
@@ -62,21 +62,21 @@ _fillSTACKS:
 .section .text, "ax", %progbits
 FM0_WARM:
 #ifdef TESTRAM
-    .word flogRAM
+	.word	flogRAM
 #endif
-    .word FWARM
-    .word SoCinit
-    .word UART0_INIT
-    .word CR
+	.word	FWARM
+	.word	SoCinit
+	.word	UART0_INIT
+	.word	CR
 WTEST: // TEST CODE GOES HERE
  //        DC32    ILA
  //        DC32    DOTS            // SHOW ANY STACK ARTIFACTS HERE
  // TEST CODE END
-	.word LIT, 0xFB, EMIT
-	.word LIT, 0xF7, EMIT
-	.word COLD
+	.word	LIT, 0xFB, EMIT
+	.word	LIT, 0xF7, EMIT
+	.word	COLD
 #ifdef USE_CMAIN
-	.word RET2c
+	.word	RET2c
 #endif
  //------------------------ for meta-single-stepping ----------------------------
  //:NONAME ssNEXT ( -- ) System Internal hi level breakpoint.
@@ -85,7 +85,7 @@ WTEST: // TEST CODE GOES HERE
 .thumb_func
 ssNEXT1:
 	LDM	w!, {x} // contents of cfa, (pfa), -> x, bump w to cfa+4
-	MOV     pc, x // w preserves cfa+4 (pfa) for DOCOL's benefit
+	MOV	pc, x // w preserves cfa+4 (pfa) for DOCOL's benefit
 
  // STI_ON: 7 E000E010h !  STI_OFF: 5 E000E010h !
 
@@ -103,13 +103,13 @@ FM0_SYSTICK_ISR:
 #ifdef ast // this is asm prim #else is hi level
  // Start of the working asm isr-------------------------------------------------
  // save what you use
-    PUSH    { t, n, lr}
-    LDR     n, = STICKER
-    LDR     t, [n]
-    ADDS    t, t, #1
-    STR     t, [n]
+	PUSH	{ t, n, lr}
+	LDR	n, = STICKER
+	LDR	t, [n]
+	ADDS	t, t, #1
+	STR	t, [n]
  // restore what was being used
-    POP     { t, n, pc } // exec lr -> pc
+	POP	{ t, n, pc } // exec lr -> pc
  // End of the working asm isr---------------------------------------------------
 .ltorg
 
@@ -120,11 +120,11 @@ FM0_SYSTICK_ISR:
 .section .text, "ax", %progbits
 .balign 4, 255
 ISR_SEMIS:
-	.word .+5
+	.word	.+5
 .section .text, "ax", %progbits
 	POPr2i // SEMIS to balance DOCOL!!!
  // needed!        POP     { r0-r5, r10-r12, pc }
-    POP   {r0-r5, pc }
+	POP	{r0-r5, pc }
 #else
  // Start of the Hi-Level WORD ISR Test------------------------------------------
 
@@ -147,40 +147,40 @@ ISR_SEMIS:
 .thumb_func
 DOCOL_ISR:
  // needed!        PUSH    { r0-r5, r10-r12, lr }
-    PUSH    {r0-r5, lr }
-    MOV     r0, r10
-    MOV     r1, r11
-    MOV     r2, r12
-    PUSH    {r0-r2}
+	PUSH	{r0-r5, lr }
+	MOV	r0, r10
+	MOV	r1, r11
+	MOV	r2, r12
+	PUSH	{r0-r2}
 
-    LDR     w, [PC, #0X4] //= MY_LTORG The High Level Target
+	LDR	w, [PC, #0X4] //= MY_LTORG The High Level Target
 	NEXT1 // -> SEMIS_ISR RETURN required instead of SEMIS!
 
  // LTORG
  // The Hi-Level WORD ISR Post amble.
 .section .text, "ax", %progbits
 .balign 4, 255
-        .word NONAME_STCTR_INCR
+	.word	NONAME_STCTR_INCR
 MY_LTORG_ISR_SEMIS:
-	.word .+5
+	.word	.+5
 .section .text, "ax", %progbits
 	POPr2i // SEMIS to balance DOCOL!!!
  // needed!        POP     { r0-r5, r10-r12, pc }
-    POP     {r0-r2}
-    MOV     r10, r0
-    MOV     r11, r1
-    MOV     r12, r2
-    POP     {r0-r5, pc }
+	POP	{r0-r2}
+	MOV	r10, r0
+	MOV	r11, r1
+	MOV	r12, r2
+	POP	{r0-r5, pc }
 
  // The test Hi-Level target WORD.
 .section .text, "ax", %progbits
 .balign 4, 255
 NONAME_STCTR_INCR:
-    .word DOCOL
-    .word ONE, STCTR, PSTORE
+	.word	DOCOL
+	.word	ONE, STCTR, PSTORE
  //    DC32    STCTR, QUES   // Works showing longer execution can be done.
  //    DC32    DOTSHEX, CR
-    .word MY_LTORG_ISR_SEMIS
+	.word	MY_LTORG_ISR_SEMIS
  // End of the Hi-Level WORD ISR Test--------------------------------------------
  // NOTE: LTORG manual in this section!
 #endif

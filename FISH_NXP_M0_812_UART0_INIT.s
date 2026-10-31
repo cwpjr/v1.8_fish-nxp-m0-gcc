@@ -9,13 +9,13 @@
 
 .section .text, "ax", %progbits
 UART0_INIT_NFA:
-	.byte 0x8A
-	.ascii "UART0_INI"
-	.byte 'T'+0x80
+	.byte	0x8A
+	.ascii	"UART0_INI"
+	.byte	'T'+0x80
 .balign 4, 255
-	.word WC_NUMBERS_NFA
+	.word	WC_NUMBERS_NFA
 UART0_INIT:
-  .word DOCOL
+	.word	DOCOL
 
 /* [LPC800] UM10601 4.6.18
 USART fractional generator divider value register
@@ -54,18 +54,18 @@ ultimate USART output.
 */
 
 #ifndef DEFAULT_BAUD_TEST
-  .word LIT, DBAUD, AT, ZEQU
-  .word ZBRAN
-  .word BAUDDEFAULT-.
-  .word LIT, UBAUD, AT
-  .word TOR
-  .word BRAN
-  .word BAUD1-.
+	.word	LIT, DBAUD, AT, ZEQU
+	.word	ZBRAN
+	.word	BAUDDEFAULT-.
+	.word	LIT, UBAUD, AT
+	.word	TOR
+	.word	BRAN
+	.word	BAUD1-.
 #endif
 
 BAUDDEFAULT: // ELSE
-  .word LIT, DEFAULT_BAUD
-  .word TOR
+	.word	LIT, DEFAULT_BAUD
+	.word	TOR
 
 /* [LPC800] UM10601 15.5
 The Baud Rate Generator block divides the incoming clock to create a
@@ -79,13 +79,13 @@ are shared between all USARTs. UARTCLKDIV_81x set by value > 0 = U_PCLK
 */
 
 BAUD1:
-  .word STRVA, 1, UARTCLKDIV_81x
+	.word	STRVA, 1, UARTCLKDIV_81x
 
-  .word STRVA, 0x0FF, UARTFRGDIV
+	.word	STRVA, 0x0FF, UARTFRGDIV
 
-  .word RFROM, LIT, 16, STAR
-  .word SYSCLK, SWAP, SLASH
-  .word ONE, SUBB
+	.word	RFROM, LIT, 16, STAR
+	.word	SYSCLK, SWAP, SLASH
+	.word	ONE, SUBB
 
 /* [LPC800] UM10601 15.6.9
 Remark: If software needs to change the baud rate,
@@ -99,24 +99,24 @@ the following sequence should be used:
 CFG, address 0x40064000h (USART0
 */
 BRG81x:
-        .word STRVA, 0, USART0_BRG
+	.word	STRVA, 0, USART0_BRG
 #ifdef SLOW_POWERUP
-        .word FOUR, MS
+	.word	FOUR, MS
 #endif
-        .word LIT, USART0_BRG
-        .word STORE
+	.word	LIT, USART0_BRG
+	.word	STORE
 
 #ifdef CTS_RTS
  // NOT ASSIGNING CTS IN SoCinit:
  // ?CTS not working on 812 JTAG because its not connected!?!
  // ?CTS not working on 812 USB ?????
  // 0x200 = CTSEN + 5 = 8,N,1 Pinout done in SoCinit
-        .word STRVA, 0x205, USART0_CFG
+	.word	STRVA, 0x205, USART0_CFG
 #else
-        .word STRVA, 0x05, USART0_CFG
+	.word	STRVA, 0x05, USART0_CFG
 #endif
 #ifdef DEFAULT_BAUD_TEST
-        .word STRVA, 0X31, UART0_TX
+	.word	STRVA, 0X31, UART0_TX
 #endif
 
-        .word SEMIS
+	.word	SEMIS
