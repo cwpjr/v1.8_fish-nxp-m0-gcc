@@ -67,7 +67,7 @@ msg_FISH:
  // DC8 "?" IS A NULL TERMINATED STRING
  // DC8 '?' IS NOT
  //     DC8     'FISH ARM'
-	.ascii	"FISH ARM Hi-Level ISR Test!!!"
+	.ascii	"FISH ARM"
  //------------------------------------------------------------------------------
  // CHIP FLASH and RAM DESIGNATION
 #ifdef  NXP_M0_812
@@ -105,8 +105,8 @@ msg_FISH:
  // FISH COPYRIGHT AND TEAM
 	.ascii	" (C)2014-2026 A-TEAM FORTH : "
  //------------------------------------------------------------------------------
-#ifndef SRM
- // FISH DATE AND TIMESTAMP
+#if !defined(SRM) && !defined(FISH_NO_TIMESTAMP)
+ // FISH DATE AND TIMESTAMP (dropped on 16k parts: FISH_NO_TIMESTAMP)
 	.ascii	__DATE__
 msg_FISH_TIMESTAMP:
 	.ascii	" at "
@@ -1446,7 +1446,9 @@ VS_RECVR_NEXT:
 	.word	NFA
 	.word	DP_SV
 	.word	STORE
+#ifndef FISH_LEAN_WORDSET
 	.word	DOTVARSPACE, DOTDICTSPACE
+#endif
 	.word	SEMIS
 
  //     BYE BYE: ( -- ) COLD RESTART WITH SERIAL INITIALIZATION
@@ -5025,7 +5027,9 @@ EHON:
  //     .DS DOTDICTSPACE:       ( n -- )
  //     Prints number of bytes availble in dictionary in DECIMAL using DOT,
  //     not affecting Base in the system
+ //     Omitted when FISH_LEAN_WORDSET (16k parts) - also see DOTVARSPACE.
 
+#ifndef FISH_LEAN_WORDSET
 .section .text, "ax", %progbits
 DOTDICTSPACE_NFA:
 	.byte	0x83
@@ -5084,6 +5088,7 @@ DOTVARSPACE:
 	.word	CLRPAD
 #endif
 	.word	SEMIS
+#endif // FISH_LEAN_WORDSET (DOTDICTSPACE and DOTVARSPACE omitted)
 
  //     DUMP DUMP:      ( addr n -- )
  //     Print adrr and n lines of 4 columns of memory values in hexadecimal.
@@ -5096,7 +5101,11 @@ DUMP_NFA:
 	.ascii	"DUM"
 	.byte	'P'+0x80
 .balign 4, 255
+#ifdef FISH_LEAN_WORDSET
+	.word	EHON_NFA // lean: link past DOTVARSPACE/DOTDICTSPACE
+#else
 	.word	DOTVARSPACE_NFA
+#endif
 DUMP:
 	.word	DOCOL
 

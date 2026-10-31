@@ -544,7 +544,7 @@ SIGNON:
 #ifdef SRM
 	.word	CR
 #endif
-#ifndef SRM
+#if !defined(SRM) && !defined(FISH_NO_TIMESTAMP)
 	.word	LIT, msg_FISH_TIMESTAMP
 	.word	NULLSTRLEN, TYPE
 #endif

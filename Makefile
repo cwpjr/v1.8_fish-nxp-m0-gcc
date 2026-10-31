@@ -6,7 +6,9 @@ NM := $(CROSS_COMPILE)nm
 
 BUILD_DIR ?= build/gcc
 CPUFLAGS := -mcpu=cortex-m0plus -mthumb
-ASM_DEFINES := -DNXP_M0_812 -DFISH_PubRel_WORDSET -DNXP_M0_81x_IRC12_24MHZ -DNXP_M0_016kFlash_1KWrite -DNXP_M0_004kRam
+ASM_DEFINES := -DNXP_M0_812 -DFISH_PubRel_WORDSET -DNXP_M0_81x_IRC12_24MHZ -DNXP_M0_016kFlash_1KWrite -DNXP_M0_004kRam -DFISH_NO_TIMESTAMP -DFISH_LEAN_WORDSET
+# Keep in sync with FLASH_SPAGE in FISH_M0_EQUATES.h for the active config!
+FLASH_SPAGE_HEX := 0x3C00
 CFLAGS := $(CPUFLAGS) $(ASM_DEFINES) -std=gnu11 -Os -ffreestanding -ffunction-sections -fdata-sections -fno-common -Wall -Wextra -I.
 ASFLAGS := $(CPUFLAGS) $(ASM_DEFINES) -I.
 LDFLAGS := $(CPUFLAGS) -nostdlib -Wl,--gc-sections -Wl,-Map,$(BUILD_DIR)/fish.map -Tlpc812_gnu.ld
@@ -29,8 +31,13 @@ FORTH_INCLUDES := \
 	FISH_NXP_M0_812_SOC_INIT.s
 OBJECTS := $(BUILD_DIR)/FISH_NXP_M0_Forth_GNU.o $(BUILD_DIR)/startup_lpc812_gnu.o $(BUILD_DIR)/main.o
 
-.PHONY: all clean size
-all: $(BUILD_DIR)/fish.hex $(BUILD_DIR)/fish.sym $(BUILD_DIR)/fish.map
+.PHONY: all clean size fitcheck
+all: $(BUILD_DIR)/fish.hex $(BUILD_DIR)/fish.sym $(BUILD_DIR)/fish.map fitcheck
+
+# Fail the build if the kernel image overlaps the dictionary flash pages.
+# The flash save code writes whole sectors and is blind to the kernel extent.
+fitcheck: $(BUILD_DIR)/fish.hex
+	python3 ../tools/fish_check_fit.py $< --spage $(FLASH_SPAGE_HEX)
 
 $(BUILD_DIR)/FISH_NXP_M0_Forth_GNU.o: FISH_NXP_M0_Forth_GNU.S $(FORTH_INCLUDES)
 	mkdir -p $(BUILD_DIR)

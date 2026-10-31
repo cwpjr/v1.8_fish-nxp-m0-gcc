@@ -37,15 +37,31 @@
 #endif // NXP_M0_032kFlash_4KWrite
 
  // This section for NXP M1 812 16k Flash parts
+ // Dictionary size is selectable in 1K pages via one ASM_DEFINES constant:
+ //   (none)        = 1K dict (SPAGE 0x3C00) - legacy default
+ //   FISH_DICT_2K  = 2K dict (SPAGE 0x3800)
+ //   FISH_DICT_3K  = 3K dict (SPAGE 0x3400)
+ //   FISH_DICT_4K  = 4K dict (SPAGE 0x3000)
+ // The kernel image MUST fit below FLASH_SPAGE: `make` runs
+ // fish_check_fit.py against FLASH_SPAGE_HEX in the Makefile - keep
+ // Makefile FLASH_SPAGE_HEX in sync with the chosen FISH_DICT_xK!
 #ifdef NXP_M0_016kFlash_1KWrite
 .equ FLASH_WR_SIZE, 0x0400
-#ifndef SRM
-.equ FLASH_SPAGE, 0x3C00
+ // .equ does not exist for the C preprocessor: use #if/#elif, never
+ // #ifndef FLASH_SPAGE here.
+#if defined(FISH_DICT_4K)
+.equ FLASH_SPAGE, 0x3000 // 4K FREE
+#elif defined(FISH_DICT_3K)
+.equ FLASH_SPAGE, 0x3400 // 3K FREE
+#elif defined(FISH_DICT_2K)
+.equ FLASH_SPAGE, 0x3800 // 2K FREE
 #else
-.equ FLASH_SPAGE, 0x3800
- //FLASH_SPAGE     EQU     0x3400          // 3K FREE
- //FLASH_SPAGE     EQU     0x3000          // 4K FREE
+#ifndef SRM
+.equ FLASH_SPAGE, 0x3C00 // 1K FREE (legacy default)
+#else
+.equ FLASH_SPAGE, 0x3800 // SRM legacy default (2K FREE)
 #endif // SRM
+#endif // FISH_DICT_xK
 .equ FLASH_LPAGE, 0x3C00
  // FOR LOOP CONTROL AND BOUNDS CHECKING
 .equ FLASH_PPAGE, 0x4000

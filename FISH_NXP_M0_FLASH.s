@@ -75,7 +75,7 @@ FS_WRITE:
  // FLASH_SAVE Finish
 FS_EXIT:
 	.word	FLASH_SCAN
-#ifndef SRM
+#if !defined(SRM) && !defined(FISH_LEAN_WORDSET)
 	.word	CR, DOTVARSPACE, DOTDICTSPACE
 #endif
 	.word	XON
@@ -384,7 +384,7 @@ FFDONE:
 	.word	LIT, 0x11111111, DUP, FPCURR, STORE, FPVAR, STORE
  // Show results
 	.word	FLASH_SCAN
-#ifndef SRM
+#if !defined(SRM) && !defined(FISH_LEAN_WORDSET)
 	.word	CR, DOTVARSPACE, DOTDICTSPACE
 #endif
 	.word	XON

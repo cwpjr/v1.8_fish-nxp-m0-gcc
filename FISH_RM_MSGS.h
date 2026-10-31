@@ -19,11 +19,13 @@ msg_questionmark:
 msg_cr:
 	.ascii	" <CR> "
 
+#ifndef FISH_LEAN_WORDSET
 msg_uvspace:
 	.ascii	"VAR CELLS "
 
 msg_dictspace:
 	.ascii	"DICTIONARY BYTES "
+#endif
 
 msg_paren_err:
 #ifdef EOL_NAK
