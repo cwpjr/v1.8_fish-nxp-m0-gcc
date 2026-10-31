@@ -11,125 +11,125 @@
 .balign 4, 255
  // ALIGN THIS ONE FOR PFIND
 msg_RUN:
-        .byte 3
-        .ascii "RUN "
+	.byte	3
+	.ascii	"RUN "
 msg_questionmark:
-	.ascii " ? "
+	.ascii	" ? "
 
 msg_cr:
-	.ascii " <CR> "
+	.ascii	" <CR> "
 
 msg_uvspace:
-	.ascii "VAR CELLS "
+	.ascii	"VAR CELLS "
 
 msg_dictspace:
-	.ascii "DICTIONARY BYTES "
+	.ascii	"DICTIONARY BYTES "
 
 msg_paren_err:
 #ifdef EOL_NAK
-        .ascii " COMMENT LINE CANNOT BE EMPTY "
-        .byte 0x15
-        .byte 0
+	.ascii	" COMMENT LINE CANNOT BE EMPTY "
+	.byte	0x15
+	.byte	0
 #else
-        .ascii " COMMENT LINE CANNOT BE EMPTY "
+	.ascii	" COMMENT LINE CANNOT BE EMPTY "
 #endif
 
 msg_forget_fish:
 #ifdef EOL_NAK
-        .ascii " CANT FORGET FISH IN FLASH "
-        .byte 0x15
-        .byte 0
+	.ascii	" CANT FORGET FISH IN FLASH "
+	.byte	0x15
+	.byte	0
 #else
-        .ascii " CANT FORGET FISH IN FLASH "
+	.ascii	" CANT FORGET FISH IN FLASH "
 #endif
 
 msg_forget_saved:
 #ifdef EOL_NAK
-        .ascii " IN FLASH - SEE FLASH_FORGET "
-        .byte 0x15
-        .byte 0
+	.ascii	" IN FLASH - SEE FLASH_FORGET "
+	.byte	0x15
+	.byte	0
 #else
-        .ascii " IN FLASH - SEE FLASH_FORGET "
+	.ascii	" IN FLASH - SEE FLASH_FORGET "
 #endif
 
 msg_dictfull:
 #ifdef EOL_NAK
-	.ascii " DICTIONARY FULL - SEE .DS "
-        .byte 0x15
-        .byte 0
+	.ascii	" DICTIONARY FULL - SEE .DS "
+	.byte	0x15
+	.byte	0
 #else
-	.ascii " DICTIONARY FULL - SEE .DS "
+	.ascii	" DICTIONARY FULL - SEE .DS "
 #endif
 
 msg_uvfull:
 #ifdef EOL_NAK
-	.ascii " RAM VAR SPACE FULL - SEE .VS "
-        .byte 0x15
-        .byte 0
+	.ascii	" RAM VAR SPACE FULL - SEE .VS "
+	.byte	0x15
+	.byte	0
 #else
-	.ascii " RAM VAR SPACE FULL - SEE .VS "
+	.ascii	" RAM VAR SPACE FULL - SEE .VS "
 #endif
 
 msg_wordexists:
 #ifdef EOL_NAK
-	.ascii " IS ALREADY DEFINED "
-        .byte 0x15
-        .byte 0
+	.ascii	" IS ALREADY DEFINED "
+	.byte	0x15
+	.byte	0
 #else
-	.ascii " IS ALREADY DEFINED "
+	.ascii	" IS ALREADY DEFINED "
 #endif
 
 msg_word_error:
 #ifdef EOL_NAK
-        .ascii " ? NOT WORD "
-        .byte 0x15
-        .byte 0
+	.ascii	" ? NOT WORD "
+	.byte	0x15
+	.byte	0
 #else
-        .ascii " ? NOT WORD "
+	.ascii	" ? NOT WORD "
 #endif
 
 msg_number_error:
 #ifdef EOL_NAK
-	.ascii " ? NOT WORD OR NUMBER "
-        .byte 0x15
-        .byte 0
+	.ascii	" ? NOT WORD OR NUMBER "
+	.byte	0x15
+	.byte	0
 #else
-	.ascii " ? NOT WORD OR NUMBER "
+	.ascii	" ? NOT WORD OR NUMBER "
 #endif
 
 msg_qstack:
 #ifdef EOL_NAK
-	.ascii " CAUSED A STACK ERROR "
-        .byte 0x15
-        .byte 0
+	.ascii	" CAUSED A STACK ERROR "
+	.byte	0x15
+	.byte	0
 #else
-	.ascii " CAUSED A STACK ERROR "
+	.ascii	" CAUSED A STACK ERROR "
 #endif
 
 msg_qpair:
 #ifdef EOL_NAK
-	.ascii " STACK ERROR WHILE EXECUTING OR COMPILING "
-        .byte 0x15
-        .byte 0
+	.ascii	" STACK ERROR WHILE EXECUTING OR COMPILING "
+	.byte	0x15
+	.byte	0
 #else
-	.ascii " STACK ERROR WHILE EXECUTING OR COMPILING "
+	.ascii	" STACK ERROR WHILE EXECUTING OR COMPILING "
 #endif
 
 msg_qcomp:
 #ifdef EOL_NAK
-	.ascii " ERROR - NOT COMPILING "
-        .byte 0x15
-        .byte 0
+	.ascii	" ERROR - NOT COMPILING "
+	.byte	0x15
+	.byte	0
 #else
-	.ascii " ERROR - NOT COMPILING "
+	.ascii	" ERROR - NOT COMPILING "
 #endif
 
 msg_qexec:
 #ifdef EOL_NAK
-	.ascii " ERROR - EXECUTED WHILE COMPILING "
-        .byte 0x15
-        .byte 0
+	.ascii	" ERROR - EXECUTED WHILE COMPILING "
+	.byte	0x15
+	.byte	0
 #else
-	.ascii " ERROR - EXECUTED WHILE COMPILING "
+	.ascii	" ERROR - EXECUTED WHILE COMPILING "
 #endif
 

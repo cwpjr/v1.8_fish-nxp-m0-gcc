@@ -1,0 +1,4 @@
+# FISH project clang-format settings.
+# CMSIS include order is BY DESIGN (device header before core header);
+# never let clang-format reorder them.
+SortIncludes: Never

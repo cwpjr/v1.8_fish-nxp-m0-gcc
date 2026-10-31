@@ -10,5 +10,5 @@
  // IF this fits in 1114 move to FISH_RM_MSGS.h
 
 msg_CO:
-	.ascii " Error Halt (EHON/EHOFF) - To COntinue Type CO then Enter: "
+	.ascii	" Error Halt (EHON/EHOFF) - To COntinue Type CO then Enter: "
 

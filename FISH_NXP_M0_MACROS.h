@@ -55,7 +55,7 @@
 #ifndef TOSCT
 	LDR	t, [p] // pop tos to t, post increment p
 #endif
-        ADDS	p, p, #4
+	ADDS	p, p, #4
 .endm
 
 .macro NDPOP2t
@@ -121,7 +121,7 @@
 .endm
 
 .macro POPr2i
-	LDR i, [r] //  pop r to i, post increment r
+	LDR	i, [r] //  pop r to i, post increment r
 	ADDS	r, r, #4
 .endm
 
@@ -147,11 +147,11 @@
 
 .macro LIT2t
  // as in xeq token at ToS setup for lit
- 	LDM	i!, {t} // fetch memory p points to into {t}, inc i
+	LDM	i!, {t} // fetch memory p points to into {t}, inc i
 .endm
 
 .macro POPp2w
  // as in xeq token at ToS setup for exec
- 	LDM	p!, {w} // fetch memory p points to into {w}, inc p
+	LDM	p!, {w} // fetch memory p points to into {w}, inc p
 .endm
 
