@@ -14,7 +14,7 @@ __vector_table:
 	.word	MemManage_Handler
 	.word	BusFault_Handler
 	.word	UsageFault_Handler
-	.word	0
+	.word	__vector_checksum // LPC boot ROM: sum of vectors 0..7 must be 0
 	.word	0
 	.word	0
 	.word	0

@@ -1,5 +1,17 @@
 ENTRY(Reset_Handler)
 
+/* NXP LPC boot ROM "valid user code" criterion: the reserved vector slot 7
+   (offset 0x1C) must hold the 2's complement of the checksum of vectors 0-6
+   so the sum of the first 8 entries is 0, else the part enters UART ISP
+   instead of running flash. Computed at link time from the Thumb-bit
+   function symbol values, exactly as stored. */
+/* ld strips the Thumb bit from function symbols in arithmetic, so each
+   handler needs +1 to match the odd values actually stored in the table
+   (same +1 idiom as NXP's own managed linker scripts). */
+__vector_checksum = 0 - (_estack + (Reset_Handler + 1) + (NMI_Handler + 1)
+                       + (HardFault_Handler + 1) + (MemManage_Handler + 1)
+                       + (BusFault_Handler + 1) + (UsageFault_Handler + 1));
+
 MEMORY
 {
     FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 16K
@@ -29,7 +41,7 @@ SECTIONS
     .FISH_Ram_MemMap ORIGIN(RAM) (NOLOAD) :
     {
         . = ALIGN(4);
-        KEEP(*(.FISH_Ram_MemMap))
+        KEEP(*(FISH_Ram_MemMap .FISH_Ram_MemMap))
         . = ALIGN(4);
     } > RAM
 

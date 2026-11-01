@@ -34,6 +34,7 @@ msg_paren_err:
 	.byte	0
 #else
 	.ascii	" COMMENT LINE CANNOT BE EMPTY "
+	.byte	0 // NULLSTRLEN terminator (EOL_NAK off)
 #endif
 
 msg_forget_fish:
@@ -43,6 +44,7 @@ msg_forget_fish:
 	.byte	0
 #else
 	.ascii	" CANT FORGET FISH IN FLASH "
+	.byte	0
 #endif
 
 msg_forget_saved:
@@ -52,6 +54,7 @@ msg_forget_saved:
 	.byte	0
 #else
 	.ascii	" IN FLASH - SEE FLASH_FORGET "
+	.byte	0
 #endif
 
 msg_dictfull:
@@ -61,6 +64,7 @@ msg_dictfull:
 	.byte	0
 #else
 	.ascii	" DICTIONARY FULL - SEE .DS "
+	.byte	0
 #endif
 
 msg_uvfull:
@@ -70,6 +74,7 @@ msg_uvfull:
 	.byte	0
 #else
 	.ascii	" RAM VAR SPACE FULL - SEE .VS "
+	.byte	0
 #endif
 
 msg_wordexists:
@@ -79,6 +84,7 @@ msg_wordexists:
 	.byte	0
 #else
 	.ascii	" IS ALREADY DEFINED "
+	.byte	0
 #endif
 
 msg_word_error:
@@ -88,6 +94,7 @@ msg_word_error:
 	.byte	0
 #else
 	.ascii	" ? NOT WORD "
+	.byte	0
 #endif
 
 msg_number_error:
@@ -97,6 +104,7 @@ msg_number_error:
 	.byte	0
 #else
 	.ascii	" ? NOT WORD OR NUMBER "
+	.byte	0
 #endif
 
 msg_qstack:
@@ -106,6 +114,7 @@ msg_qstack:
 	.byte	0
 #else
 	.ascii	" CAUSED A STACK ERROR "
+	.byte	0
 #endif
 
 msg_qpair:
@@ -115,6 +124,7 @@ msg_qpair:
 	.byte	0
 #else
 	.ascii	" STACK ERROR WHILE EXECUTING OR COMPILING "
+	.byte	0
 #endif
 
 msg_qcomp:
@@ -124,6 +134,7 @@ msg_qcomp:
 	.byte	0
 #else
 	.ascii	" ERROR - NOT COMPILING "
+	.byte	0
 #endif
 
 msg_qexec:
@@ -133,5 +144,6 @@ msg_qexec:
 	.byte	0
 #else
 	.ascii	" ERROR - EXECUTED WHILE COMPILING "
+	.byte	0
 #endif
 

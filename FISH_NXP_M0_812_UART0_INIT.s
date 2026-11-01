@@ -47,8 +47,8 @@ The FRG output clock is defined as the inputs clock divided by 1 + (MULT / 256),
 MULT is in the range of 1 to 255. This allows producing an output clock that ranges from
 the input clock divided by 1+1/256 to 1+255/256 (just more than 1 to just less than 2). Any
 further division can be done specific to each USART block by the integer BRG divider
-contained in each USART. The base clock produced by the FRG cannotbe perfectly symmetrical, so the FRG
-distributes the output clocks asevenly as is practical. Since the USART normally uses 16x
+contained in each USART. The base clock produced by the FRG cannot be perfectly symmetrical, so the FRG
+distributes the output clocks as venly as is practical. Since the USART normally uses 16x
 overclocking, the jitter in the fractional rate clock in these cases tends to disappear in the
 ultimate USART output.
 */
@@ -81,7 +81,7 @@ are shared between all USARTs. UARTCLKDIV_81x set by value > 0 = U_PCLK
 BAUD1:
 	.word	STRVA, 1, UARTCLKDIV_81x
 
-	.word	STRVA, 0x0FF, UARTFRGDIV
+	.word	STRVA, 0x0FF, UARTFRGDIV	// Set the FRG divider to 0x0FF
 
 	.word	RFROM, LIT, 16, STAR
 	.word	SYSCLK, SWAP, SLASH
@@ -111,12 +111,12 @@ BRG81x:
  // ?CTS not working on 812 JTAG because its not connected!?!
  // ?CTS not working on 812 USB ?????
  // 0x200 = CTSEN + 5 = 8,N,1 Pinout done in SoCinit
-	.word	STRVA, 0x205, USART0_CFG
+	.word	STRVA, 0x205, USART0_CFG // Enable CTS and RTS
 #else
-	.word	STRVA, 0x05, USART0_CFG
+	.word	STRVA, 0x05, USART0_CFG	// Enable RTS only
 #endif
 #ifdef DEFAULT_BAUD_TEST
-	.word	STRVA, 0X31, UART0_TX
+	.word	STRVA, 0X31, UART0_TX	// Set default baud for UART0 TX
 #endif
 
 	.word	SEMIS

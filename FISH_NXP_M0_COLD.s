@@ -146,12 +146,16 @@ ISR_SEMIS:
 .balign 4, 255
 .thumb_func
 DOCOL_ISR:
- // needed!        PUSH    { r0-r5, r10-r12, lr }
-	PUSH	{r0-r5, lr }
-	MOV	r0, r10
-	MOV	r1, r11
-	MOV	r2, r12
-	PUSH	{r0-r2}
+ // Register preservation contract (stock case) -- see ISR_REGISTER_AUDIT.md:
+ // HW exception frame already holds r0-r3, r12, lr, pc, xPSR.
+ // Inner interpreter (NEXT/NEXT1/DOCOL/SEMIS) + data-stack words clobber
+ // r0-r7 and lr; of those only y,i,r,p (r4-r7) need a software save, and
+ // lr (EXC_RETURN) must survive the BLX in NEXT1.
+ // ra/rb/k (r10-r12) are NOT touched by the inner interpreter or the stock
+ // ISR thread (ONE, STCTR, PSTORE); r12 is HW-saved anyway. If a future ISR
+ // thread calls words that use ra/rb (TYPE/search/number-parse in SLIB),
+ // shuttle r10/r11 to low regs and push/pop them here too.
+	PUSH	{r4-r7, lr } // y, i, r, p + EXC_RETURN
 
 	LDR	w, [PC, #0X4] //= MY_LTORG The High Level Target
 	NEXT1 // -> SEMIS_ISR RETURN required instead of SEMIS!
@@ -165,12 +169,7 @@ MY_LTORG_ISR_SEMIS:
 	.word	.+5
 .section .text, "ax", %progbits
 	POPr2i // SEMIS to balance DOCOL!!!
- // needed!        POP     { r0-r5, r10-r12, pc }
-	POP	{r0-r2}
-	MOV	r10, r0
-	MOV	r11, r1
-	MOV	r12, r2
-	POP	{r0-r5, pc }
+	POP	{r4-r7, pc } // restore y,i,r,p; pc=EXC_RETURN -> HW restores rest
 
  // The test Hi-Level target WORD.
 .section .text, "ax", %progbits

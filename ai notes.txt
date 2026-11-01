@@ -2,4 +2,16 @@ So both GNU ports are now fixed:
  STM32F407 (proven by booting to the REPL in Renode)
  and NXP LPC812 (statically verified — no LPC812 emulator exists).
 
-GitHub SSH: key:cw2026 Name:FISH
+​ @nivoset  my solution looks like this:
+only behavior earns examples; edge cases earn fixtures.
+Never engineer specs for failure messages.
+When it comes to edge cases there's 2 steps
+1. You should ensure that a fixture
+    (or something otherwise buried in enumeration/sampling)
+    exercises them. 
+2. Make the cases meaningful either by folding assertions 
+    into the spec or by adding run-time asserts into the code
+    (e.g. raise "invalid input:
+     negative number"  if x < 0)
+Again, avoid giving these their own example if at all possible,
+ this will only hurt the readability of your spec.

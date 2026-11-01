@@ -26,6 +26,9 @@ DICTSPACE_END: // For DICTSPACE calculation
 PAD: .space (1 * (IOBUFSIZE))
 TIB: .space (1 * (IOBUFSIZE))
 FLOW_STATE: .space 1 // 0 = none sent yet, else XON_CHAR/XOFF_CHAR
+ // FLOW_STATE is a byte: re-align or STICKER/RAMVARSPACE land on odd
+ // addresses and every word LDR/STR to them HardFaults (ARMv6-M).
+.balign 4
 STICKER: .space (4 * (1))
 
 RAMVARSPACE_START:

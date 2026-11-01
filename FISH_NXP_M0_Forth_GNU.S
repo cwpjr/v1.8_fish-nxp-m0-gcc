@@ -3215,7 +3215,9 @@ DNEGATE:
 	POP2w // LSW   //POP    CX
 	MVNS	t, t // negate MSW
 	MVNS	w, w // negate LSW
-	ADDS	w, w, #1 // add 1 to LSW
+	ADDS	w, w, #1 // add 1 to LSW, C=1 iff LSW was 0
+	MOVS	x, #0 // zero x, MOVS preserves C
+	ADCS	t, t, x // negate MSW + carry (was dropped: LSW==0 case)
 	DPUSH //  --  LSW MSW )
 
  //     DPL_SV: ( -- addr of NDPL ) Contains # of digits after . in double number

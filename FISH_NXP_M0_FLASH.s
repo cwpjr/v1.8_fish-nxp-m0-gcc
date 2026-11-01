@@ -50,7 +50,7 @@ FSLASTPAGE:
  // Based on relocating UP and Latest to FPVAR and FPCURR
 FSAVE:
  // Stop Downloads
-	.word	XON
+	.word	XOFF
  // FPA SHOULD BE SET BY FLASH_SCAN IN WARM OR BY FISH OR FISH_ONLY
  // FPCURR AND FPVAR SAVE
 	.word	UP_SV, AT, FPVAR, STORE
@@ -112,7 +112,9 @@ TOFA:
 	.word	.+5
 .section .text, "ax", %progbits
 	POP2t
-	LDR	w, = 0x0FFF
+	# Previously used 4KB page mask
+	# LDR	w, = 0x0FFF
+	LDR	w, = FLASH_WR_SIZE-1
 	ANDS	t, t, w
 	LDR	w, = FPA
 	LDR	w, [w]
@@ -391,6 +393,30 @@ FFDONE:
 	.word	SEMIS
 
 
+ //:NONAME	FLRET:	( -- addr ) IAP result block (FLASHRET) address.
+.section .text, "ax", %progbits
+FLRET:
+	.word	DOCON, FLASHRET
+
+ //:NONAME FLASHQERR:	( -- ) Report IAP error if last FLASH command failed.
+ //	IAP status 0 = CMD_SUCCESS. Prints status and continues.
+.section .text, "ax", %progbits
+FLASHQERR:
+	.word	DOCOL
+	.word	FLRET, AT
+	.word	ZBRAN
+	.word	FQE_OK-.
+ // STATUS != 0: IAP ERROR
+	.word	CR
+	.word	PDOTQ
+	.byte	14
+	.ascii	"FLASH IAP ERR "
+.balign 4, 255
+	.word	FLRET, AT, DOTHEX
+	.word	CR
+FQE_OK:
+	.word	SEMIS
+
  //:NONAME FLASHWRITE:	( --  ) Commands to save Ram to Flash using FPADDR.
  //	FLASH SEQ OF CMDS TO COPY 4K RAM USING FPADDR
 .section .text, "ax", %progbits
@@ -401,10 +427,17 @@ FLASHWRITE:
 	.word	HERE, SUBB
 	.word	LIT, 0xFF
 	.word	FILL
+ // FLASHQERR must run OUTSIDE the IRQ-off windows: its error path prints
+ // (DOTHEX -> DIG -> MSMOD -> USLASH -> C_CMSIS_ENABLE_IRQS), which would
+ // re-enable interrupts mid-window. Same pattern as ASSUREPAGE/FF_LOOP.
 	.word	CMSIS_DISABLE_IRQS
 	.word	FLASHPREP, FLASHESEC
+	.word	CMSIS_ENABLE_IRQS
+	.word	FLASHQERR
+	.word	CMSIS_DISABLE_IRQS
 	.word	FLASHPREP, FLASHCRTF
 	.word	CMSIS_ENABLE_IRQS
+	.word	FLASHQERR
 	.word	SEMIS
 
  //------------------------------------------------------------------------------

@@ -11,4 +11,5 @@
 
 msg_CO:
 	.ascii	" Error Halt (EHON/EHOFF) - To COntinue Type CO then Enter: "
+	.byte	0 // NULLSTRLEN terminator (was missing: garbage tail on print)
 

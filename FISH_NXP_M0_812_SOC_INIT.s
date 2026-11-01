@@ -108,10 +108,4 @@ _wPLLlock:
  // Select Clock
  // Tickle Update Register
 #endif
-
- // Set SYSCLOCK = SYSTEMCLOCK defined in FISH_M0_EQUATES.s
- // And set in Project Configuration ex: NXP_M0_81x_IRC12_12MHZ
- // in Assembler -> Preprocessor -> Defined Symbols
-	.word	STRVA, SYSTEMCLOCK, SYSCLOCK
-
 	.word	SEMIS

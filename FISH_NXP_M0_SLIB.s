@@ -750,11 +750,12 @@ CREATE_DOES_GOTO:
  // NO DOCOL - SO FUDGE ONE
  // PUSH ADDR AFTER EXEC in INTERPRET TO r:
 	PUSHi2r // save IP to Rstack
+ // NEXT1 leaves w = cfa+4 (t is user TOS, never the cfa - IAR-era bug)
  // AND THIS LOADS GOTO ADDR
-	LDR	i, [t, #4] // GET GOTO ADDRESS
- // THIS PUSHES PFA TO t
-	ADDS	t, t, #8 // COMPUTE REAL PFA
-	PUSHt
+	LDR	i, [w] // GET GOTO ADDRESS = [cfa+4]
+ // THIS PUSHES PFA
+	ADDS	w, w, #4 // COMPUTE REAL PFA = cfa+8
+	PUSHw
 	NEXT
 
  //:NONAME DICTSPACE:  ( -- n ) Calculate and push dictionary space available
