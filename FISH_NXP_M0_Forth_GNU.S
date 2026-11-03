@@ -1358,6 +1358,7 @@ COUNT:
  //     TYPE can be used after this word.
 
 .section .text, "ax", %progbits
+	NEXT_TAILS // shared NEXT copy (B range)
 NULLSTRLEN_NFA:
 	.byte	0x84
 	.ascii	"$LE"
@@ -3226,6 +3227,7 @@ DABS:
  //      Convert d1 to its double number two's complement d2.
 
 .section .text, "ax", %progbits
+	NEXT_TAILS // shared NEXT copy (B range)
 DNEGATE_NFA:
 	.byte	0x87
 	.ascii	"DNEGAT"
@@ -4466,6 +4468,7 @@ UART0_TX:
 #ifdef NXP_M0_812
 	.word	DOCON, USART0_TXDAT
 #endif
+	NEXT_TAILS // shared NEXT copy (B range) - kept outside #ifdef XON_XOFF
 
 #ifdef XON_XOFF
  //     XOFF XOFF: ( -- ) Send XOFF
@@ -5304,6 +5307,7 @@ BACKSLASH:
  //      Returns system clock value in Hz, i.e. 48000000 = 48Mhz.
 
 .section .text, "ax", %progbits
+	NEXT_TAILS // shared NEXT copy (B range)
 SYSCLK_NFA:
 	.byte	0x86
 	.ascii	"SYSCL"

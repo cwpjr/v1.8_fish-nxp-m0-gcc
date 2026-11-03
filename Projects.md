@@ -91,3 +91,20 @@ HEX 1F -1 .S DECIMAL 2DROP      \ TOS> FFFFFFFFh 1Fh
 : ARR <BUILDS 4 * ALLOT DOES> SWAP 4 * + ;  5 ARR A1  1 A1 0 A1 - .  FLASH_SAVE   \ 4
 ( reset )  1 A1 0 A1 - .  DEPTH .                                                \ 4 0
 ```
+
+## 2026-11-03 — Branch `shared-next`: option A (shared NEXT tails) for the 2nd flash page
+
+Goal: shrink the image by ≥ 984 B, so it ends ≤ 0x3800 and `FISH_DICT_2K` gives a 2nd save page.
+
+- `FISH_NXP_M0_MACROS.h`:
+  - `NEXT`/`TPUSH`/`DPUSH` are now a 2-byte `B` to the nearest preceding `NEXT_TAILS` copy (GAS local labels 71b/72b/73b).
+  - The `NEXT_I`/`TPUSH_I`/`DPUSH_I` macros keep the original inline expansions.
+- `NEXT_TAILS` (14 B: push w → push t → `LDM i!,{w}; NEXT1`) placed 6× in dead spots, all scripted:
+  `SLIB.s` start and before `USLASH`; `Forth_GNU.S` before `NULLSTRLEN`, `DNEGATE`, after `UART0_TX` (outside `#ifdef XON_XOFF`), and before `SYSCLK`.
+- Result: **15,320 → 14,624 B (−696 B)**, 736 B free under 0x3C00. Still **288 B short** of 0x3800 for the 2nd page; next candidates are D (WORDS banners ≈ 236), B (init table ≈ 100), F (multiply ≈ 22).
+- Static checks:
+  - 6 tail copies; 114 branches (NEXT 45 / TPUSH 55 / DPUSH 14) = the old inline site counts.
+  - Max backward distance 2,044 B (the assembler enforces the 2,048 B limit).
+  - Remaining `blx r3`: 6 tails + 3 IAP + 2 `NEXT1` (EXEC, SysTick ISR).
+- Cost: +1 taken `B` (~2 cycles on M0+) per primitive executed. Not hardware-tested.
+- ⚠️ Kernel CFA addresses changed. **Erase saved flash pages (`FLASH_FORGET`) after flashing this kernel**; words saved with an older kernel point at old addresses.

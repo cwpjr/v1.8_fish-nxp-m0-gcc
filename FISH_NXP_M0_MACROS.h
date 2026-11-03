@@ -23,19 +23,45 @@
 #endif
  // ENDIF
 
-.macro NEXT
+.macro NEXT_I
 	LDM	i!, {w} // get cfa addr to w, incr i after
 	NEXT1
 .endm
 
-.macro TPUSH
+.macro TPUSH_I
 	PUSHt // push t to p, pre decrement p
-	NEXT
+	NEXT_I
+.endm
+
+.macro DPUSH_I
+	PUSHw // push w to p, pre decrement p
+	TPUSH_I
+.endm
+
+ //------------------------------------------------------------------------------
+ //	SHARED NEXT (size): NEXT/TPUSH/DPUSH are a 2-byte B to the nearest
+ //	NEXT_TAILS copy BEFORE the use site (GAS local labels 71b/72b/73b).
+ //	Thumb B reaches -2048 B: the assembler errors if a copy is too far,
+ //	then add another NEXT_TAILS in a dead spot (between dictionary entries).
+ //	*_I variants are the original inline expansions (hot primitives).
+ //	Labels 71/72/73 are reserved for NEXT_TAILS in this assembly unit.
+.macro NEXT_TAILS
+71:	PUSHw // DPUSH entry: push w, fall into TPUSH
+72:	PUSHt // TPUSH entry: push t, fall into NEXT
+73:	NEXT_I // NEXT entry
+.balign 4, 255
+.endm
+
+.macro NEXT
+	B	73b
+.endm
+
+.macro TPUSH
+	B	72b
 .endm
 
 .macro DPUSH
-	PUSHw // push w to p, pre decrement p
-	TPUSH
+	B	71b
 .endm
 
  //------------------------------------------------------------------------------

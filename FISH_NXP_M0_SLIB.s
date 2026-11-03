@@ -5,6 +5,7 @@
  // SECTION HEADER TO ALIGN ALL HI LEVEL CODE - ASM SECTION AT END DIFFERS!
 .section .text, "ax", %progbits
 .balign 4, 255
+	NEXT_TAILS // first shared NEXT copy - must precede every NEXT use
  //------------------------------------------------------------------------------
  //:NONAME BELL:       ( -- ) Emit BELL char.
 BELL:
@@ -1191,6 +1192,7 @@ USTAR:
 	MOV	t, n // MSW
 	DPUSH //  --  LSW MSW )
 
+	NEXT_TAILS // shared NEXT copy (B range)
  //:NONAME       USLASH:	( d n --- u32REM u32QUO ) USED INTERNALLY - NOT UNSIGNED
  //      Leave the unsigned remainder u2 and unsigned quotient u3 from the
  //      unsigned double dividend ud and unsigned divisor u1.
