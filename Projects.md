@@ -78,3 +78,16 @@ Target was confirmed as **LPC812 only** (16 KB flash, 4 KB RAM).
   - Observed in the emulator: `DEPTH` correct; `.S`/`.SH`/`.SB` output identical to the baseline; underflow caught on the first extra `DROP`.
   - `FLASH_SAVE` → reboot with an `ARR`/`A1` `DOES>` child worked.
 - Finding: the stock LPC812 config has **one** save page, so the `DOES>`-relocation bug's trigger (defining word in an earlier page) can't occur. The guard is defensive.
+
+### Bench checklist (commit d8b735e, run on hardware)
+```forth
+DEPTH .                         \ 0
+1 2 3 DEPTH .  .S               \ 3  TOS> 3d 2d 1d
+DROP DROP DROP DEPTH .  .S      \ 0  (prints nothing)
+1 2 SP@ @ . . . DEPTH .         \ 2 2 1 0
+DROP                            \ DROP CAUSED A STACK ERROR  (first extra DROP)
+HEX 1F -1 .S DECIMAL 2DROP      \ TOS> FFFFFFFFh 1Fh
+7 .SH .SB DROP                  \ TOS> 7h TOS> 111b
+: ARR <BUILDS 4 * ALLOT DOES> SWAP 4 * + ;  5 ARR A1  1 A1 0 A1 - .  FLASH_SAVE   \ 4
+( reset )  1 A1 0 A1 - .  DEPTH .                                                \ 4 0
+```
