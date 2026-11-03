@@ -176,6 +176,11 @@
 	LDM	i!, {t} // fetch memory p points to into {t}, inc i
 .endm
 
+ // SV val, addr : one STRVAS table entry (cells: addr, val). See STRVAS.
+.macro SV val, addr
+	.word	\addr, \val
+.endm
+
 .macro POPp2w
  // as in xeq token at ToS setup for exec
 	LDM	p!, {w} // fetch memory p points to into {w}, inc p

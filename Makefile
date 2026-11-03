@@ -6,9 +6,9 @@ NM := $(CROSS_COMPILE)nm
 
 BUILD_DIR ?= build/gcc
 CPUFLAGS := -mcpu=cortex-m0plus -mthumb
-ASM_DEFINES := -DNXP_M0_812 -DFISH_PubRel_WORDSET -DNXP_M0_81x_IRC12_24MHZ -DNXP_M0_016kFlash_1KWrite -DNXP_M0_004kRam -DFISH_NO_TIMESTAMP -DFISH_LEAN_WORDSET
+ASM_DEFINES := -DNXP_M0_812 -DFISH_PubRel_WORDSET -DNXP_M0_81x_IRC12_24MHZ -DNXP_M0_016kFlash_1KWrite -DNXP_M0_004kRam -DFISH_NO_TIMESTAMP -DFISH_LEAN_WORDSET -DFISH_DICT_2K
 # Keep in sync with FLASH_SPAGE in FISH_M0_EQUATES.h for the active config!
-FLASH_SPAGE_HEX := 0x3C00
+FLASH_SPAGE_HEX := 0x3800
 CFLAGS := $(CPUFLAGS) $(ASM_DEFINES) -std=gnu11 -Os -ffreestanding -ffunction-sections -fdata-sections -fno-common -Wall -Wextra -I.
 ASFLAGS := $(CPUFLAGS) $(ASM_DEFINES) -I.
 LDFLAGS := $(CPUFLAGS) -nostdlib -Wl,--gc-sections -Wl,-Map,$(BUILD_DIR)/fish.map -Tlpc812_gnu.ld

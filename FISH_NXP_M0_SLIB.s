@@ -1284,6 +1284,22 @@ STRVA:
 	STR	n, [w]
 	NEXT
 
+ //:NONAME STRVAS ( -- ) STRVA table: inline (addr, val) cell pairs, ended by
+ //	addr 0. Write pairs with the SV macro (SV val, addr = STRVA order).
+ //	8 B per store vs 12 B for STRVA. Kernel-only (RWORD never sees it).
+.section .text, "ax", %progbits
+.balign 4, 255
+STRVAS:
+	.word	.+5
+.section .text, "ax", %progbits
+81:	LDM	i!, {w} // addr
+	CMP	w, #0
+	BEQ	82f // addr 0 ends the table
+	LDM	i!, {n} // val
+	STR	n, [w]
+	B	81b
+82:	NEXT
+
  //------------------------------------------------------------------------------
  // SECTION HEADER TO RE ALIGN ALL CODE AFTER THIS INCLUDE
 .section .text, "ax", %progbits

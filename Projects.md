@@ -108,3 +108,19 @@ Goal: shrink the image by ≥ 984 B, so it ends ≤ 0x3800 and `FISH_DICT_2K` gi
   - Remaining `blx r3`: 6 tails + 3 IAP + 2 `NEXT1` (EXEC, SysTick ISR).
 - Cost: +1 taken `B` (~2 cycles on M0+) per primitive executed. Not hardware-tested.
 - ⚠️ Kernel CFA addresses changed. **Erase saved flash pages (`FLASH_FORGET`) after flashing this kernel**; words saved with an older kernel point at old addresses.
+
+## 2026-11-03 — Branch `shared-next`: D + literal pools + B → **2nd flash page (FISH_DICT_2K)**
+
+| Step | Change | Image |
+|---|---|---:|
+| A (prev commit) | shared NEXT tails | 14,624 |
+| D | 9 kernel WORDS banners behind `WORDCAT_BANNERS` (off). Each `WC_x_NFA` becomes `.set` to the word it linked to (top anchor `WC_FISH_PubRel_NFA` = `FISH_NFA`). User `WORDCAT` banners still work | 14,388 (−236) |
+| C | 7 of 26 `.ltorg`s merged into later pools (scripted greedy; kept only if the build passed, the image shrank, and the aligned code-field and thread-cell counts were unchanged — 2 misaligning candidates rejected) | 14,328 (−60) |
+| B | `STRVAS` primitive + `SV val, addr` macro. The SoCinit `STRVA` runs (11 + 3 stores) became tables ending in addr 0; `#ifdef`s preserved, including the `SLOW_POWERUP` split and the non-IRC terminator | 14,308 (−20) |
+| — | Makefile: `-DFISH_DICT_2K`, `FLASH_SPAGE_HEX := 0x3800` | **fits, 28 B free** |
+
+- Save pages are now **0x3800 and 0x3C00** (`FLASH_LPAGE` 0x3C00).
+- Static checks: dictionary chain walk = 209 headers `FISH` → `NOOP`, every NFA, link and code field valid, no banners left; linker ASSERTs and fit check pass.
+- Estimate correction: B saved 20 B, not ~100 (most `STRVA` sites are single stores).
+- Not hardware-tested. Bench: boot/signon, `WORDS` (no category headings now), the earlier checklist, then **two** `FLASH_SAVE`s + reset (both pages link; `"LAST FLASH PAGE USED"` only on the 3rd).
+- ⚠️ Kernel layout changed: `FLASH_FORGET` / erase pages 0x3800–0x3FFF after flashing.

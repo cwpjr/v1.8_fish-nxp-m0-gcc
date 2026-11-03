@@ -1560,6 +1560,7 @@ COLD:
  //     WC_FISH_SYS: = FISH System: CATEGORY
 
 .section .text, "ax", %progbits
+#ifdef WORDCAT_BANNERS
 WC_FISH_SYS_NFA:
 	.byte	0x80+4+12
 	.byte	0x0D
@@ -1569,6 +1570,9 @@ WC_FISH_SYS_NFA:
 	.byte	0x0A+0x80
 .balign 4, 255
 	.word	COLD_NFA
+#else // kernel banner dropped: alias to the word it linked to
+.set WC_FISH_SYS_NFA, COLD_NFA
+#endif // WORDCAT_BANNERS
 
  //----------------------------- DOTSTACK SECTION -------------------------------
  //     .SH DOTSHEX:    ( -- )
@@ -1997,6 +2001,7 @@ DUP:
  //     WC_STACK_NFA = Stack Stuff: CATEGORY
 
 .section .text, "ax", %progbits
+#ifdef WORDCAT_BANNERS
 WC_STACK_NFA:
 	.byte	0x80+4+12
 	.byte	0x0D
@@ -2006,6 +2011,9 @@ WC_STACK_NFA:
 	.byte	0x0A+0x80
 .balign 4, 255
 	.word	DUP_NFA
+#else // kernel banner dropped: alias to the word it linked to
+.set WC_STACK_NFA, DUP_NFA
+#endif // WORDCAT_BANNERS
 
  //     ANDBITS ANDBITS:        ( addr val -- )
 
@@ -2282,6 +2290,7 @@ CSTORE:
  //     WC_RWMEMORY_NFA = Read and Write Memory With: CATEGORY
 
 .section .text, "ax", %progbits
+#ifdef WORDCAT_BANNERS
 WC_RWMEMORY_NFA:
 	.byte	0x80+31
 	.byte	0x0D
@@ -2291,6 +2300,9 @@ WC_RWMEMORY_NFA:
 	.byte	0x0A+0x80
 .balign 4, 255
 	.word	CSTORE_NFA
+#else // kernel banner dropped: alias to the word it linked to
+.set WC_RWMEMORY_NFA, CSTORE_NFA
+#endif // WORDCAT_BANNERS
 
  //     ] RBRAC:        ( -- )
  //     Resume compilation, by STATE back to 0xC0 (zero is interpreting)
@@ -2939,6 +2951,7 @@ BEGIN:
  //     WC_COMPILE_NFA = Inside Colon WORDS: CATEGORY
 
 .section .text, "ax", %progbits
+#ifdef WORDCAT_BANNERS
 WC_COMPILE_NFA:
 	.byte	0x80+4+19
 	.byte	0x0D
@@ -2948,6 +2961,9 @@ WC_COMPILE_NFA:
 	.byte	0x0A+0x80
 .balign 4, 255
 	.word	BEGIN_NFA
+#else // kernel banner dropped: alias to the word it linked to
+.set WC_COMPILE_NFA, BEGIN_NFA
+#endif // WORDCAT_BANNERS
 
  //     IMMEDIATE IMMED:        ( -- )
  //     Mark the most recently made definition so that when encountered at
@@ -3196,6 +3212,7 @@ COLON:
  //     WC_CREATE_NFA = CREATE WORDS With: CATEGORY
 
 .section .text, "ax", %progbits
+#ifdef WORDCAT_BANNERS
 WC_CREATE_NFA:
 	.byte	0x80+22
 	.byte	0x0D
@@ -3205,6 +3222,9 @@ WC_CREATE_NFA:
 	.byte	0x0A+0x80
 .balign 4, 255
 	.word	COLON_NFA
+#else // kernel banner dropped: alias to the word it linked to
+.set WC_CREATE_NFA, COLON_NFA
+#endif // WORDCAT_BANNERS
 
  //     DABS DABS: ( sd=(LSW MSW) -- ud=(LSW MSW) )
  //      Leave the absolute value ud of a signed double number.
@@ -4342,6 +4362,7 @@ DOTDEC:
  //     WC_NUMBERS_NFA = NUMBER Stuff: CATEGORY
 
 .section .text, "ax", %progbits
+#ifdef WORDCAT_BANNERS
 WC_NUMBERS_NFA:
 	.byte	0x80+4+13
 	.byte	0x0D
@@ -4355,6 +4376,13 @@ WC_NUMBERS_NFA:
 #else
 	.word	DOTDEC_NFA
 #endif
+#else // kernel banner dropped: alias to the word it linked to
+#ifdef SRM
+.set WC_NUMBERS_NFA, DOTHEX_NFA
+#else
+.set WC_NUMBERS_NFA, DOTDEC_NFA
+#endif
+#endif // WORDCAT_BANNERS
  //=============================== UART0_INIT =================================//
 
  // LFA ABOVE NEEDS TO BE WC_NUMBERS_NFA
@@ -4431,7 +4459,7 @@ UART0_LSR:
 #endif
 	LDRB	t, [n]
 	TPUSH
-.ltorg
+ // .ltorg merged into a later pool (size)
 
  //     UART0_RX UART0_RX: ( -- addr ) of UART 0 RX Buffer
  //     This is the serial terminal.
@@ -4725,7 +4753,7 @@ EMIT:
 
 	NEXT
 #endif // else IO2TP
-.ltorg
+ // .ltorg merged into a later pool (size)
 
  //     KEY KEY:        (  -- ch )
 
@@ -4783,7 +4811,7 @@ rxRDY_Q:
  //------------------------------------------------------------------------------
 	.word	DOCOL, LIT, 0X0D, SEMIS
 #endif // else IO2TP
-.ltorg
+ // .ltorg merged into a later pool (size)
 
  //     ?KEY QKEY: ( -- f )
  //     Return zero unless key in fifo - key is not consumed.
@@ -4882,6 +4910,7 @@ CR:
  //     WC_FISH_IO_NFA = FISH IO: CATEGORY
 
 .section .text, "ax", %progbits
+#ifdef WORDCAT_BANNERS
 WC_UARTx_NFA:
 	.byte	0x80+4+9
 	.byte	0x0D
@@ -4891,6 +4920,9 @@ WC_UARTx_NFA:
 	.byte	0x0A+0x80
 .balign 4, 255
 	.word	CR_NFA
+#else // kernel banner dropped: alias to the word it linked to
+.set WC_UARTx_NFA, CR_NFA
+#endif // WORDCAT_BANNERS
 
  //     CMSIS_ENABLE_IRQS IRQS_RESUME:  ( -- )
 .section .text, "ax", %progbits
@@ -4970,6 +5002,7 @@ SYSTICK_IRQ_ON:
  //     WC_IRQ_NFA = INTERRUPTS: CATEGORY
 
 .section .text, "ax", %progbits
+#ifdef WORDCAT_BANNERS
 WC_IRQ_NFA:
 	.byte	0x80+4+11
 	.byte	0x0D
@@ -4979,6 +5012,9 @@ WC_IRQ_NFA:
 	.byte	0x0A+0x80
 .balign 4, 255
 	.word	SYSTICK_IRQ_ON_NFA
+#else // kernel banner dropped: alias to the word it linked to
+.set WC_IRQ_NFA, SYSTICK_IRQ_ON_NFA
+#endif // WORDCAT_BANNERS
  //------------------------------------------------------------------------------
 #include "FISH_NXP_M0_FLASH.s"
  // LFA BELOW NEEDS TO BE FLASH_FORGET_NFA
@@ -5320,7 +5356,7 @@ SYSCLK:
 	LDR	n, = SYSCLOCK // SystemCoreClock
 	LDR	t, [n]
 	TPUSH // Push -- t
-.ltorg
+ // .ltorg merged into a later pool (size)
 
  //      STCTR   ( -- addr ) SYSTICK Interrupt increments this with 32but wrap.
  //      STI_ON: 7 E000E010h !  STI_OFF: 5 E000E010h ! E000E010h @ .H
@@ -5604,6 +5640,7 @@ FISH:
  //NOEXEC HEADERFORWORDCATEGORIES
  //     WC_FISH_PubRel: = FISH Reference Model: CATEGORY
 .section .text, "ax", %progbits
+#ifdef WORDCAT_BANNERS
 WC_FISH_PubRel_NFA:
 	.byte	0x80+4+21
 	.byte	0x0D
@@ -5613,6 +5650,9 @@ WC_FISH_PubRel_NFA:
 	.byte	0x0A+0x80
 .balign 4, 255
 	.word	FISH_NFA
+#else // kernel banner dropped: alias to the word it linked to
+.set WC_FISH_PubRel_NFA, FISH_NFA
+#endif // WORDCAT_BANNERS
 
  //=============================== WORDCAT ====================================//
 

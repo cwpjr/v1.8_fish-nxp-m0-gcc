@@ -120,7 +120,7 @@ TOFA:
 	LDR	w, [w]
 	ADDS	t, t, w
 	TPUSH
-.ltorg
+ // .ltorg merged into a later pool (size)
 
 
  //:NONAME RWORD:	( nfa -- ) Relocate this word relative to FPADDR
@@ -257,7 +257,7 @@ FLASHPREP:
 	MOV	t, k // restore TOS
 #endif
 	NEXT // FLASHPREP
-.ltorg
+ // .ltorg merged into a later pool (size)
 
 
  //:NONAME FLASHESEC:	( -- ) Erase Flash sectors using FPADDR - flashprep 1rst!
@@ -292,7 +292,7 @@ FLASHESEC:
 	MOV	t, k // restore TOS
 #endif
 	NEXT // FLASHESEC
-.ltorg
+ // .ltorg merged into a later pool (size)
 
 
  //:NONAME FLASHCRTF:	( -- ) Copy Ram to Flash using FPADDR

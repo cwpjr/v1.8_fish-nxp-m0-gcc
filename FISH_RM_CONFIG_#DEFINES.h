@@ -4,6 +4,7 @@
 #define FISH_STM32F4_Peripheral_Register_ADDRS
 #define TRUE_EQU_NEG_ONE
 #define XON_XOFF // Use XON_XOFF Flow Control
+//#define WORDCAT_BANNERS // WORDS category headings in the kernel (+~236 B; off = room for FISH_DICT_2K)
 #define ABORT_STOP_TILL_CO
 #define EOL_DLE // DLE 0x10/16d in QUIT after last line interpreted
 #define EOL_NAK // NAK in error messages for STDLED editor highlight
