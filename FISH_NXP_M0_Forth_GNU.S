@@ -1641,8 +1641,9 @@ DOTS_NFA:
 #endif // SRM
 DOTS:
 	.word	DOCOL
-	.word	INITSO_SV, AT, SPAT, FOURP
-	.word	EQUAL, ZEQU, ZBRAN
+ // Built on DEPTH, and SP@ = address of TOS: item i lives at SP@ + 4*i.
+ // Both hold with or without a TOS register cache (SP@ spills TOS there).
+	.word	DEPTH, ZBRAN
 	.word	DOTSEND-.
 
 	.word	PDOTQ
@@ -1650,11 +1651,11 @@ DOTS:
 	.ascii	"TOS> "
 .balign 4, 255
 
-	.word	INITSO_SV, AT, SPAT, FOURP
+	.word	DEPTH, ZERO
 	.word	XDO
 
 DOTSLOOP:
-	.word	I, AT
+	.word	SPAT, I, TWOSTAR, TWOSTAR, PLUS, AT
 	.word	BASE_SV, AT
 	.word	LIT, 10, EQUAL
 	.word	ZBRAN
@@ -1675,11 +1676,34 @@ DBSUSEDUDOT:
 #endif // SRM
 DBSUSEDOT:
 	.word	SPACE
-	.word	FOUR, XPLOOP
+	.word	XLOOP
 	.word	DOTSLOOP-.
 
 DOTSEND:
 	.word	SEMIS
+
+ //     DEPTH DEPTH:    ( -- n )
+ //     Number of items on the parameter stack before DEPTH executed.
+ //     n = (S0 - p) / 4. Negative after underflow (used by ?STACK).
+ //     Reads p directly: correct with or without a TOS register cache.
+ //     TOS_CACHE note: spill t before loading the result into t.
+
+.section .text, "ax", %progbits
+DEPTH_NFA:
+	.byte	0x85
+	.ascii	"DEPT"
+	.byte	'H'+0x80
+.balign 4, 255
+	.word	DOTS_NFA
+DEPTH:
+	.word	.+5
+.section .text, "ax", %progbits
+	LDR	t, =INITSO // S0
+	LDR	t, [t]
+	SUBS	t, t, p // S0 - p (bytes)
+	ASRS	t, t, #2 // cells, signed
+	TPUSH
+.ltorg
 
  //     2DUP TDUP:      ( n2 n1 -- n2 n1 n2 n1 )
  //     Duplicate top two stack items. The prefix 2 convention means
@@ -1691,7 +1715,7 @@ TDUP_NFA:
 	.ascii	"2DU"
 	.byte	'P'+0x80
 .balign 4, 255
-	.word	DOTS_NFA
+	.word	DEPTH_NFA
 TDUP:
 	.word	.+5
 .section .text, "ax", %progbits

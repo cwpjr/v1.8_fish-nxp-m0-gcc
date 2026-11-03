@@ -140,7 +140,14 @@ CFA_CREATE_DOES_GOTO:
 	.word	ZBRAN
 	.word	RW_DOCONVAR-.
 
-	.word	FOURP, DUP, DUP
+	.word	FOURP
+ // Relocate the DOES> target only if it points into the RAM dictionary.
+ // A target already in flash (defining word saved earlier) must NOT be TOFA'd.
+	.word	DUP, AT, DBASE, GREATERTHAN
+	.word	ZBRAN
+	.word	RW_UNTIL-.
+
+	.word	DUP, DUP
 	.word	AT, TOFA
 	.word	SWAP, STORE
 	.word	BRAN

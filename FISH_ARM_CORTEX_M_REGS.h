@@ -6,8 +6,8 @@
  // i	r5
  // r	r6
  // p	r7
- // r8   lr
- // r9   pc
+ // r8   free (unused) high register - NOT lr
+ // r9   free (unused) high register - NOT pc
  // ra	r10
  // rb	r11
  // k	r12
@@ -20,8 +20,8 @@
 #define i r5   //   IP                     DX:SI
 #define r r6   //   Return Stack Pointer
 #define p r7   //   Parameter Stack Pointer
- //              r8          Link register
- //              r9          Program Counter
+ //              r8, r9      free high registers (AAPCS callee-saved)
+ //              lr = r14, pc = r15 (not r8/r9)
  //   ARMv6 Cortex M0 LPC 1114 is 16 bit thumb ISA.
  //	Use of the following registers limited to local variables mostly
 #define ra r10 //

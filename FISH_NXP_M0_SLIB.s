@@ -190,11 +190,9 @@ QPAIR:
  //	definition may be installation dependent.
 QSTACK:
 	.word	DOCOL
-	.word	SPAT
-	.word	INITSO_SV
-	.word	AT
-	.word	SWAP
-	.word	ULESSTHAN
+ // Underflow if DEPTH < 0. DEPTH reads p directly, so this stays correct
+ // if TOS is ever cached in t (SP@-based checks would be one cell late).
+	.word	DEPTH, ZLESS
 	.word	LIT, msg_qstack
 	.word	QERROR
 	.word	SEMIS
