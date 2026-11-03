@@ -124,3 +124,40 @@ Goal: shrink the image by ≥ 984 B, so it ends ≤ 0x3800 and `FISH_DICT_2K` gi
 - Estimate correction: B saved 20 B, not ~100 (most `STRVA` sites are single stores).
 - Not hardware-tested. Bench: boot/signon, `WORDS` (no category headings now), the earlier checklist, then **two** `FLASH_SAVE`s + reset (both pages link; `"LAST FLASH PAGE USED"` only on the 3rd).
 - ⚠️ Kernel layout changed: `FLASH_FORGET` / erase pages 0x3800–0x3FFF after flashing.
+
+## 2026-11-03 16:34 CST — Session status snapshot
+
+### Repository state
+| Branch | Head | Pushed | Contents |
+|---|---|---|---|
+| `main` | `3d5e220` | ✅ origin/main | `DEPTH`, `.S`/`?STACK` on `DEPTH`, `DOES>` relocation guard, r8/r9 comments, design docs, this log |
+| `shared-next` | `d572d0e` | ✅ origin/shared-next | `main` + A (shared NEXT), D (banners off), C (pool merge), B (`STRVAS`), `FISH_DICT_2K` |
+
+`shared-next` is **not merged** into `main`. It waits for the bench test.
+
+### Image sizes (LPC812, 16 KB)
+| Build | Bytes | Save pages | Free below FLASH_SPAGE |
+|---|---:|---|---:|
+| Start of session | 15,284 | 0x3C00 | 76 |
+| `main` | 15,320 | 0x3C00 | 40 |
+| `shared-next` | 14,308 | 0x3800 + 0x3C00 | 28 |
+
+### Session activity summary (all entries above)
+- Design: `FISH-NXP-812-16bit-Threading.md` (TOKEN16, TOS/NOS cache, D1–D9) and `FISH-NXP-812-16bit-Partial-Multiply.md`.
+- Code: `DEPTH` and the stack-check rework; the `DOES>` guard; shrinking to 2 save pages (A, D, C, B).
+- Verification so far:
+  - Builds, fit checks and linker ASSERTs.
+  - Disassembly and branch-target checks; NEXT site counts (45/55/14).
+  - Dictionary chain walk (209 headers).
+  - Host model of the partial-product `U*` (10⁶+ cases).
+  - A brief Unicorn emulator run of `main`'s `DEPTH`/`.S`, stopped at the user's request.
+- Tools: throwaway emulator in `/tmp/fishemu` (not in the repo); placement and pool scripts in `/tmp/place_tails.py` and `/tmp/ltorg_greedy.py`.
+
+### Pending (user)
+1. Bench test `shared-next`: flash → `FLASH_FORGET` → signon/`WORDS` → stack checklist → 2× `FLASH_SAVE` + reset.
+2. Then decide: merge `shared-next` → `main`.
+
+### Open items
+- Margin on `shared-next` is only 28 B. The partial multiply (≈ −22 B, faster `*`, no IRQ-off math) is the next cheap gain.
+- TOKEN16 / S1 TOS cache: design only.
+- Confirm that the IAP ROM preserves r9 and the single-cycle multiplier (datasheet).
