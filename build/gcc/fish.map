@@ -1,0 +1,151 @@
+
+Discarded input sections
+
+ .data          0x00000000        0x0 build/gcc/FISH_NXP_M0_Forth_GNU.o
+ .bss           0x00000000        0x0 build/gcc/FISH_NXP_M0_Forth_GNU.o
+ .text          0x00000000        0x0 build/gcc/startup_lpc812_gnu.o
+ .data          0x00000000        0x0 build/gcc/startup_lpc812_gnu.o
+ .bss           0x00000000        0x0 build/gcc/startup_lpc812_gnu.o
+ .text          0x00000000        0x0 build/gcc/main.o
+ .data          0x00000000        0x0 build/gcc/main.o
+ .bss           0x00000000        0x0 build/gcc/main.o
+ .comment       0x00000000       0x27 build/gcc/main.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+FLASH            0x00000000         0x00004000         xr
+RAM              0x10000000         0x00001000         xrw
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+LOAD build/gcc/FISH_NXP_M0_Forth_GNU.o
+LOAD build/gcc/startup_lpc812_gnu.o
+LOAD build/gcc/main.o
+LOAD /usr/lib/gcc/arm-none-eabi/14.2.1/thumb/v6-m/nofp/libgcc.a
+                0xeffe8e76                        __vector_checksum = (0x0 - ((((((_estack + (Reset_Handler + 0x1)) + (NMI_Handler + 0x1)) + (HardFault_Handler + 0x1)) + (MemManage_Handler + 0x1)) + (BusFault_Handler + 0x1)) + (UsageFault_Handler + 0x1)))
+
+.isr_vector     0x00000000       0xc0
+                0x00000000                        . = ALIGN (0x4)
+ *(.isr_vector)
+ .isr_vector    0x00000000       0xc0 build/gcc/startup_lpc812_gnu.o
+                0x00000000                __vector_table
+                0x000000c0                        . = ALIGN (0x4)
+
+.text           0x000000c0     0x3b18
+                0x000000c0                        . = ALIGN (0x4)
+ *(.text .text.*)
+ .text          0x000000c0     0x3a68 build/gcc/FISH_NXP_M0_Forth_GNU.o
+                0x000009ec                FM0_COLD
+                0x00000a64                FM0_SYSTICK_ISR
+ .text.Reset_Handler
+                0x00003b28       0x40 build/gcc/startup_lpc812_gnu.o
+                0x00003b28                Reset_Handler
+ .text.Default_Handler
+                0x00003b68       0x20 build/gcc/startup_lpc812_gnu.o
+                0x00003b68                Default_Handler
+                0x00003b6a                NMI_Handler
+                0x00003b6c                MemManage_Handler
+                0x00003b6e                BusFault_Handler
+                0x00003b70                UsageFault_Handler
+                0x00003b72                SVC_Handler
+                0x00003b74                DebugMon_Handler
+                0x00003b76                PendSV_Handler
+                0x00003b78                HardFault_Handler
+ .text.C_CMSIS_DISABLE_IRQS
+                0x00003b88        0x4 build/gcc/main.o
+                0x00003b88                C_CMSIS_DISABLE_IRQS
+ .text.C_CMSIS_ENABLE_IRQS
+                0x00003b8c        0x4 build/gcc/main.o
+                0x00003b8c                C_CMSIS_ENABLE_IRQS
+ .text.c_64by32div
+                0x00003b90       0x28 build/gcc/main.o
+                0x00003b90                c_64by32div
+ .text.c_32by32to64mul
+                0x00003bb8       0x20 build/gcc/main.o
+                0x00003bb8                c_32by32to64mul
+ *(.rodata .rodata.*)
+                0x00003bd8                        . = ALIGN (0x4)
+
+.glue_7         0x00003bd8        0x0
+ .glue_7        0x00003bd8        0x0 linker stubs
+
+.glue_7t        0x00003bd8        0x0
+ .glue_7t       0x00003bd8        0x0 linker stubs
+
+.vfp11_veneer   0x00003bd8        0x0
+ .vfp11_veneer  0x00003bd8        0x0 linker stubs
+
+.v4_bx          0x00003bd8        0x0
+ .v4_bx         0x00003bd8        0x0 linker stubs
+
+.iplt           0x00003bd8        0x0
+ .iplt          0x00003bd8        0x0 build/gcc/FISH_NXP_M0_Forth_GNU.o
+
+.rel.dyn        0x00003bd8        0x0
+ .rel.iplt      0x00003bd8        0x0 build/gcc/FISH_NXP_M0_Forth_GNU.o
+
+.ARM.extab
+ *(.ARM.extab* .gnu.linkonce.armextab.*)
+
+.ARM.exidx
+ *(.ARM.exidx* .gnu.linkonce.armexidx.*)
+
+.FISH_Ram_MemMap
+                0x10000000      0xc4c
+                0x10000000                        . = ALIGN (0x4)
+ *(FISH_Ram_MemMap .FISH_Ram_MemMap)
+ FISH_Ram_MemMap
+                0x10000000      0xc4c build/gcc/FISH_NXP_M0_Forth_GNU.o
+                0x10000c4c                        . = ALIGN (0x4)
+
+.data           0x10000c4c        0x0 load address 0x00003bd8
+                0x10000c4c                        . = ALIGN (0x4)
+                0x10000c4c                        _sdata = .
+ *(.data .data.*)
+                0x10000c4c                        . = ALIGN (0x4)
+                0x10000c4c                        _edata = .
+                0x00003bd8                        _sidata = LOADADDR (.data)
+
+.igot.plt       0x10000c4c        0x0 load address 0x00003bd8
+ .igot.plt      0x10000c4c        0x0 build/gcc/FISH_NXP_M0_Forth_GNU.o
+
+.bss            0x10000c4c        0x0 load address 0x00003bd8
+                0x10000c4c                        . = ALIGN (0x4)
+                0x10000c4c                        _sbss = .
+ *(.bss .bss.* COMMON)
+                0x10000c4c                        . = ALIGN (0x4)
+                0x10000c4c                        _ebss = .
+
+.heap           0x10000c4c       0x44 load address 0x00003bd8
+                0x10000c50                        . = ALIGN (0x8)
+ *fill*         0x10000c4c        0x4 
+                0x10000c50                        _heap_start = .
+                0x10000c90                        . = (. + 0x40)
+ *fill*         0x10000c50       0x40 
+                0x10000c90                        _heap_end = .
+
+.stack          0x10000c90       0xa0
+                0x10000c90                        _stack_bottom = .
+                0x10000d30                        . = (. + 0xa0)
+ *fill*         0x10000c90       0xa0 
+                0x10000d30                        _estack = .
+
+/DISCARD/
+ *(.comment)
+ *(.note*)
+                0x00000001                        ASSERT (((SIZEOF (.text) + SIZEOF (.isr_vector)) <= LENGTH (FLASH)), LPC812 flash overflow)
+                0x00000001                        ASSERT ((_estack <= 0x10000d40), C data/stack overlaps FISH uninitialized RAM and VM stacks)
+                0x00000001                        ASSERT (((ADDR (.FISH_Ram_MemMap) + SIZEOF (.FISH_Ram_MemMap)) <= _heap_start), FISH RAM map overlaps C data/stack)
+OUTPUT(build/gcc/fish.elf elf32-littlearm)
+LOAD linker stubs
+
+.ARM.attributes
+                0x00000000       0x2e
+ .ARM.attributes
+                0x00000000       0x22 build/gcc/FISH_NXP_M0_Forth_GNU.o
+ .ARM.attributes
+                0x00000022       0x22 build/gcc/startup_lpc812_gnu.o
+ .ARM.attributes
+                0x00000044       0x2c build/gcc/main.o
